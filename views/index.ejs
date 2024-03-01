@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/main.css">
+
+  <title>Deez</title>
+</head>
+
+<body>
+<div class = contain>
+    <div class = toDoApp>
+        <h2>To Do List</h2>
+
+        <div class="row">
+            <form action="/" method="POST">
+            <input type="text" name="newItem" placeholder="Add to List">
+            <button>Add</button>
+            </form>
+        </div>
+            
+
+        <div class = "listContainer">
+            <% for (i=0; i < newListItem.length; i++) { %>
+                <div class = "list-items" data-id = "<%= i %>">
+                    <label class="container"><%- newListItem[i] %>
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        <span class = "delete" onclick="deleteListItem(this)">&#215;</span>
+                    </label> 
+                </div>
+            <% } %>
+        </div>
+
+        <script>
+            function deleteListItem(deleteButton) {
+            const listItem = deleteButton.closest('.list-items');
+            const itemId = listItem.getAttribute('data-id');
+            listItem.remove();
+            
+            // Send a POST request to the server to remove the item
+            fetch('/remove-item', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-HTTP-Method-Override': 'DELETE',
+              },
+              body: `index=${itemId}`,
+            })
+              .then(response => response.text())
+              .then(message => {
+                console.log(message);
+                // Update the UI or perform any other necessary actions
+                listItem.remove(); 
+              })
+              .catch(error => console.error(error));
+          }
+        
+       
+
+        </script>
+    </div>
+</div>
+
+</body>
+
+</html>
